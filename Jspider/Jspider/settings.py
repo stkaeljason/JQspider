@@ -28,6 +28,7 @@ SECRET_KEY = '-@%*rr1km+)x@77*zue1gfqo#)vmgr4#w=hte57nvpoc&d%oru'
 DEBUG = True
 
 ALLOWED_HOSTS = []
+# DEFAULT_CHARSET = 'UTF-8'
 
 
 # Application definition
@@ -40,7 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'djcelery',
-    'example_spider'
+    'example_spider',
+    'wyyx_spider',
 ]
 
 MIDDLEWARE = [
@@ -79,8 +81,12 @@ WSGI_APPLICATION = 'Jspider.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'ershixiong_anzhuang',    ## 数据库名称
+        'USER': 'root',
+        'PASSWORD': 'root',    ## 安装 mysql 数据库时，输入的 root 用户的密码
+        'HOST': '127.0.0.1',
+        'PORT':'3306'
     }
 }
 
@@ -109,7 +115,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
@@ -147,7 +153,7 @@ CELERY_ACCEPT_CONTENT = ['json', 'msgpack'] # 指定接受的内容类型
 CELERY_QUEUES = (
     Queue('default', exchange=Exchange('dfaut',type='topic'),routing_key='task.#'),
     Queue('crawl', exchange=Exchange('jason',type='topic'),routing_key='crawl.#'),
-    # Queue('celery', Exchange('celery'),routing_key='celery'),
+    Queue('celery', Exchange('celery'),routing_key='celery'),
 )
 
 CELERY_DEFAULT_EXCHANGE = 'tasks' # 默认的交换机名字为tasks
@@ -165,11 +171,11 @@ CELERY_ROUTES = {
     'routing_key': 'crawl.add',
 
     },
-    'example_spider.tasks.div': { # tasks.add的消息会进入web_tasks队列
+    'wyyx_spider.tasks.crawl_good': { # tasks.add的消息会进入web_tasks队列
 
-    'queue': 'default',
+    'queue': 'crawl',
 
-    'routing_key': 'task.div',
+    'routing_key': 'crawl.crawl_good',
 
     },
 }
