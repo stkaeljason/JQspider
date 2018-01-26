@@ -19,4 +19,4 @@ __pycache__
 #myignore
 .idea
 db.sqlite3
-
+celerybeat-schedule

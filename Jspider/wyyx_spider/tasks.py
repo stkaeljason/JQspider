@@ -9,7 +9,7 @@ import time
 import re
 from lxml import etree
 
-from celery import task
+from celery import task,shared_task
 from celery import chain
 from celery.utils.log import get_task_logger
 
@@ -71,6 +71,7 @@ def save_good_info(item):
     good.gradient_price = item['gradient_price']
     good.price_isActived = item['price_isActived']
     good.price_leftTime = item['price_leftTime']
+    good.crawl_time = item['crawl_time']
 
     good.save()
 
@@ -80,3 +81,10 @@ def crawl_good():
     url = 'http://you.163.com/item/detail?id=1100000&_stat_area=mod_1_item_22&_stat_id=1005000&_stat_referer=itemList'
     chain = fetch_page.s(url) | parse_page.s() | save_good_info.s()
     chain()
+
+
+@shared_task
+def add(x,y):
+    return x+y
+
+

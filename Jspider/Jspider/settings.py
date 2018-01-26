@@ -27,7 +27,7 @@ SECRET_KEY = '-@%*rr1km+)x@77*zue1gfqo#)vmgr4#w=hte57nvpoc&d%oru'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
 # DEFAULT_CHARSET = 'UTF-8'
 
 
@@ -41,13 +41,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'djcelery',
-    'example_spider',
+    # 'example_spider',
     'wyyx_spider',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -55,12 +56,15 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+CORS_ORIGIN_ALLOW_ALL = True
+
 ROOT_URLCONF = 'Jspider.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        # 'DIRS': [],
+        'DIRS': ['frontend/dist'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -71,6 +75,10 @@ TEMPLATES = [
             ],
         },
     },
+]
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "frontend/dist/static"),
 ]
 
 WSGI_APPLICATION = 'Jspider.wsgi.application'
@@ -130,12 +138,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 
-
-
 # ***************************celery config*******************************
 
 from kombu import Queue,Exchange
-from datetime import timedelta
 
 BROKER_URL = 'amqp://guest:guest@localhost:5672//' # 使用RabbitMQ作为消息代理
 
@@ -188,4 +193,7 @@ CELERY_ROUTES = {
 #         'args':(1,3)
 #     }
 # }
-CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
+CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'    # 可以通过ｄｊａｎｇｏ后台配置定时任务
+CELERYD_POOL_RESTARTS=True
+
+# ***************************celery config*******************************
